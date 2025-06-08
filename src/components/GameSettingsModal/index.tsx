@@ -3,7 +3,7 @@ import { Modal, Form, Input, Radio, Button, Select } from "antd";
 import { setGameSettings } from "../../redux/slices/gameSettingsSlice";
 import { useAppDispatch } from "../../redux/hooks";
 import { useNavigate } from "react-router-dom";
-import { isFormValid } from "../../utils.tsx/formUtils";
+import { isFormValid } from "../../utils/formUtils";
 import type { GameSettings } from "../../types";
 import { DEFAULT_GAME_SETTINGS, SETS_OPTIONS } from "../../constants";
 import { gameSettingsRules } from "../../constants/validationRules";
