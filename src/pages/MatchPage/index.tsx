@@ -5,6 +5,8 @@ import {
   playerScoresPoint,
   resetGameSettings,
 } from "../../redux/slices/gameSettingsSlice";
+import MissingPlayerData from "../../components/MissingPlayerData";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -27,11 +29,16 @@ const pointsToDisplay = (points: number, advantage: boolean) => {
 export default function MatchPage() {
   const settings = useAppSelector((state) => state.gameSettings);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const onPlayerScore = (player: "player1" | "player2") => {
     dispatch(playerScoresPoint(player));
   };
+  const isMissingData = !settings.player1 || !settings.player2;
 
+  if (isMissingData) {
+    return <MissingPlayerData />;
+  }
   return (
     <div style={{ padding: 20 }}>
       <Title level={3}>Тениски Меч</Title>
@@ -91,12 +98,11 @@ export default function MatchPage() {
         <Button onClick={() => onPlayerScore("player2")}>
           Поен {settings.player2 || "Играч 2"}
         </Button>
-        <Button danger onClick={() => dispatch(resetGameSettings())}>
-          Ресетуј резултат
-        </Button>
+
+        <Button onClick={() => navigate("/")}>Go Back to Home</Button>
       </Space>
-      {settings.winner && <h1> {settings.winner}</h1>}
-      <h1>{settings.server}</h1>
+      {settings.winner && <h1>Winner - {settings.winner}</h1>}
+      <h1>Server - {settings.server}</h1>
     </div>
   );
 }
