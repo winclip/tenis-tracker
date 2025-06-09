@@ -4,6 +4,29 @@ import { DEFAULT_GAME_SETTINGS } from "../../constants";
 
 const initialState: GameSettings = DEFAULT_GAME_SETTINGS;
 
+const resetPointsAndAdvantages = (state: GameSettings) => {
+  state.score.player1.points = 0;
+  state.score.player2.points = 0;
+  state.score.player1.advantage = false;
+  state.score.player2.advantage = false;
+};
+
+const resetGames = (state: GameSettings) => {
+  state.score.player1.games = 0;
+  state.score.player2.games = 0;
+};
+
+const resetTiebreak = (state: GameSettings) => {
+  state.isTiebreak = false;
+  state.tiebreakTotalPoints = 0;
+  state.score.player1.tiebreakPoints = 0;
+  state.score.player2.tiebreakPoints = 0;
+};
+
+const switchServer = (state: GameSettings) => {
+  state.server = state.server === "player1" ? "player2" : "player1";
+};
+
 const checkSetWin = (state: GameSettings, scorer: "player1" | "player2") => {
   const opponent = scorer === "player1" ? "player2" : "player1";
   const scorerGames = state.score[scorer].games;
@@ -17,24 +40,42 @@ const checkSetWin = (state: GameSettings, scorer: "player1" | "player2") => {
 
   if (scorerGames >= 6 && scorerGames - opponentGames >= 2) {
     state.score[scorer].sets += 1;
-
-    state.score.player1.games = 0;
-    state.score.player2.games = 0;
-    state.score.player1.points = 0;
-    state.score.player2.points = 0;
-    state.score.player1.advantage = false;
-    state.score.player2.advantage = false;
+    resetGames(state);
+    resetPointsAndAdvantages(state);
 
     const setsToWin = Math.ceil(state.sets / 2);
-
     if (state.score[scorer].sets >= setsToWin) {
       state.winner = scorer;
     }
   }
 };
 
-const switchServer = (state: GameSettings) => {
-  state.server = state.server === "player1" ? "player2" : "player1";
+const handleTiebreak = (state: GameSettings, scorer: "player1" | "player2") => {
+  const opponent = scorer === "player1" ? "player2" : "player1";
+
+  state.score[scorer].tiebreakPoints =
+    (state.score[scorer].tiebreakPoints || 0) + 1;
+  state.tiebreakTotalPoints = (state.tiebreakTotalPoints || 0) + 1;
+
+  if (state.tiebreakTotalPoints === 1 || state.tiebreakTotalPoints % 2 === 1) {
+    switchServer(state);
+  }
+
+  const scorerPoints = state.score[scorer].tiebreakPoints!;
+  const opponentPoints = state.score[opponent].tiebreakPoints!;
+
+  if (scorerPoints >= 7 && scorerPoints - opponentPoints >= 2) {
+    state.score[scorer].sets += 1;
+    resetTiebreak(state);
+    resetGames(state);
+
+    const setsToWin = Math.ceil(state.sets / 2);
+    if (state.score[scorer].sets >= setsToWin) {
+      state.winner = scorer;
+    } else {
+      state.server = state.whoStarts || "player1";
+    }
+  }
 };
 
 const gameSettingsSlice = createSlice({
@@ -43,68 +84,28 @@ const gameSettingsSlice = createSlice({
   reducers: {
     setGameSettings(state, action: PayloadAction<Partial<GameSettings>>) {
       Object.assign(state, action.payload);
-      if (!state.score) {
-        state.score = initialState.score;
-      }
+      state.score ||= initialState.score;
       if (action.payload.whoStarts) {
         state.server = action.payload.whoStarts;
       }
     },
 
-    resetGameSettings() {
-      return initialState;
-    },
+    resetGameSettings: () => initialState,
 
     playerScoresPoint(state, action: PayloadAction<"player1" | "player2">) {
       const scorer = action.payload;
       const opponent = scorer === "player1" ? "player2" : "player1";
-
       const scorerScore = state.score[scorer];
       const opponentScore = state.score[opponent];
 
       if (state.isTiebreak) {
-        scorerScore.tiebreakPoints = (scorerScore.tiebreakPoints || 0) + 1;
-        state.tiebreakTotalPoints = (state.tiebreakTotalPoints || 0) + 1;
-
-        if (
-          state.tiebreakTotalPoints === 1 ||
-          state.tiebreakTotalPoints % 2 === 1
-        ) {
-          switchServer(state);
-        }
-
-        if (
-          scorerScore.tiebreakPoints >= 7 &&
-          scorerScore.tiebreakPoints - (opponentScore.tiebreakPoints || 0) >= 2
-        ) {
-          scorerScore.sets += 1;
-
-          state.isTiebreak = false;
-          state.tiebreakTotalPoints = 0;
-
-          state.score.player1.games = 0;
-          state.score.player2.games = 0;
-          state.score.player1.tiebreakPoints = 0;
-          state.score.player2.tiebreakPoints = 0;
-
-          const setsToWin = Math.ceil(state.sets / 2);
-          if (scorerScore.sets >= setsToWin) {
-            state.winner = scorer;
-          } else {
-            state.server = state.whoStarts || "player1";
-          }
-        }
+        handleTiebreak(state, scorer);
         return;
       }
 
       if (scorerScore.advantage) {
         scorerScore.games += 1;
-
-        scorerScore.points = 0;
-        scorerScore.advantage = false;
-        opponentScore.points = 0;
-        opponentScore.advantage = false;
-
+        resetPointsAndAdvantages(state);
         switchServer(state);
         checkSetWin(state, scorer);
         return;
@@ -125,22 +126,15 @@ const gameSettingsSlice = createSlice({
         return;
       }
 
-      if (scorerScore.points === 3 && opponentScore.points < 3) {
-        scorerScore.games += 1;
-
-        scorerScore.points = 0;
-        scorerScore.advantage = false;
-        opponentScore.points = 0;
-        opponentScore.advantage = false;
-
-        switchServer(state);
-        checkSetWin(state, scorer);
-        return;
-      }
+      scorerScore.games += 1;
+      resetPointsAndAdvantages(state);
+      switchServer(state);
+      checkSetWin(state, scorer);
     },
   },
 });
 
 export const { setGameSettings, resetGameSettings, playerScoresPoint } =
   gameSettingsSlice.actions;
+
 export default gameSettingsSlice.reducer;
