@@ -5,6 +5,7 @@ export interface Score {
   advantage: boolean;
   games: number;
   sets: number;
+  tiebreakPoints?: number;
 }
 
 export interface GameSettings {
@@ -15,6 +16,8 @@ export interface GameSettings {
   whoStarts: "player1" | "player2";
   server: "player1" | "player2";
   winner: "player1" | "player2" | null;
+  isTiebreak?: boolean;
+  tiebreakTotalPoints?: number;
   score: {
     player1: Score;
     player2: Score;

@@ -9,12 +9,17 @@ const checkSetWin = (state: GameSettings, scorer: "player1" | "player2") => {
   const scorerGames = state.score[scorer].games;
   const opponentGames = state.score[opponent].games;
 
+  if (scorerGames === 6 && opponentGames === 6) {
+    state.isTiebreak = true;
+    state.tiebreakTotalPoints = 0;
+    return;
+  }
+
   if (scorerGames >= 6 && scorerGames - opponentGames >= 2) {
     state.score[scorer].sets += 1;
 
     state.score.player1.games = 0;
     state.score.player2.games = 0;
-
     state.score.player1.points = 0;
     state.score.player2.points = 0;
     state.score.player1.advantage = false;
@@ -37,8 +42,6 @@ const gameSettingsSlice = createSlice({
   initialState,
   reducers: {
     setGameSettings(state, action: PayloadAction<Partial<GameSettings>>) {
-      console.log(action.payload);
-
       Object.assign(state, action.payload);
       if (!state.score) {
         state.score = initialState.score;
@@ -58,6 +61,41 @@ const gameSettingsSlice = createSlice({
 
       const scorerScore = state.score[scorer];
       const opponentScore = state.score[opponent];
+
+      if (state.isTiebreak) {
+        scorerScore.tiebreakPoints = (scorerScore.tiebreakPoints || 0) + 1;
+        state.tiebreakTotalPoints = (state.tiebreakTotalPoints || 0) + 1;
+
+        if (
+          state.tiebreakTotalPoints === 1 ||
+          state.tiebreakTotalPoints % 2 === 1
+        ) {
+          switchServer(state);
+        }
+
+        if (
+          scorerScore.tiebreakPoints >= 7 &&
+          scorerScore.tiebreakPoints - (opponentScore.tiebreakPoints || 0) >= 2
+        ) {
+          scorerScore.sets += 1;
+
+          state.isTiebreak = false;
+          state.tiebreakTotalPoints = 0;
+
+          state.score.player1.games = 0;
+          state.score.player2.games = 0;
+          state.score.player1.tiebreakPoints = 0;
+          state.score.player2.tiebreakPoints = 0;
+
+          const setsToWin = Math.ceil(state.sets / 2);
+          if (scorerScore.sets >= setsToWin) {
+            state.winner = scorer;
+          } else {
+            state.server = state.whoStarts || "player1";
+          }
+        }
+        return;
+      }
 
       if (scorerScore.advantage) {
         scorerScore.games += 1;

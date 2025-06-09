@@ -1,10 +1,7 @@
 import React from "react";
 import { Typography, Card, Button, Space } from "antd";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
-import {
-  playerScoresPoint,
-  resetGameSettings,
-} from "../../redux/slices/gameSettingsSlice";
+import { playerScoresPoint } from "../../redux/slices/gameSettingsSlice";
 import MissingPlayerData from "../../components/MissingPlayerData";
 import { useNavigate } from "react-router-dom";
 
@@ -34,11 +31,13 @@ export default function MatchPage() {
   const onPlayerScore = (player: "player1" | "player2") => {
     dispatch(playerScoresPoint(player));
   };
+
   const isMissingData = !settings.player1 || !settings.player2;
 
   if (isMissingData) {
     return <MissingPlayerData />;
   }
+
   return (
     <div style={{ padding: 20 }}>
       <Title level={3}>Тениски Меч</Title>
@@ -58,6 +57,9 @@ export default function MatchPage() {
 
       <Card style={{ marginBottom: 24 }}>
         <Title level={4}>Тренутни резултат</Title>
+        {settings.isTiebreak && (
+          <p style={{ color: "red", fontWeight: "bold" }}>ТАЈБРЕЈК</p>
+        )}
         <Space size="large">
           <div>
             <Title level={5}>{settings.player1 || "Играч 1"}</Title>
@@ -67,10 +69,12 @@ export default function MatchPage() {
             <br />
             <Text>
               Поени:{" "}
-              {pointsToDisplay(
-                settings.score.player1.points,
-                settings.score.player1.advantage
-              )}
+              {settings.isTiebreak
+                ? settings.score.player1.tiebreakPoints ?? 0
+                : pointsToDisplay(
+                    settings.score.player1.points,
+                    settings.score.player1.advantage
+                  )}
             </Text>
           </div>
 
@@ -82,10 +86,12 @@ export default function MatchPage() {
             <br />
             <Text>
               Поени:{" "}
-              {pointsToDisplay(
-                settings.score.player2.points,
-                settings.score.player2.advantage
-              )}
+              {settings.isTiebreak
+                ? settings.score.player2.tiebreakPoints ?? 0
+                : pointsToDisplay(
+                    settings.score.player2.points,
+                    settings.score.player2.advantage
+                  )}
             </Text>
           </div>
         </Space>
@@ -99,10 +105,11 @@ export default function MatchPage() {
           Поен {settings.player2 || "Играч 2"}
         </Button>
 
-        <Button onClick={() => navigate("/")}>Go Back to Home</Button>
+        <Button onClick={() => navigate("/")}>Почетна</Button>
       </Space>
-      {settings.winner && <h1>Winner - {settings.winner}</h1>}
-      <h1>Server - {settings.server}</h1>
+
+      {settings.winner && <h1>🏆 Победник - {settings.winner}</h1>}
+      <h1>🎾 Сервис - {settings.server}</h1>
     </div>
   );
 }
