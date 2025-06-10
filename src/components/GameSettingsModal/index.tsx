@@ -1,6 +1,9 @@
-import   { useEffect } from "react";
+import { useEffect } from "react";
 import { Modal, Form, Input, Radio, Button, Select } from "antd";
-import { setGameSettings } from "../../redux/slices/gameSettingsSlice";
+import {
+  resetGameSettings,
+  setGameSettings,
+} from "../../redux/slices/gameSettingsSlice";
 import { useAppDispatch } from "../../redux/hooks";
 import { useNavigate } from "react-router-dom";
 import { isFormValid } from "../../utils/formUtils";
@@ -22,6 +25,7 @@ export default function GameSettingsModal({ open, onClose }: Props) {
 
   useEffect(() => {
     if (open) {
+      dispatch(resetGameSettings());
       form.resetFields();
     }
   }, [open, form]);

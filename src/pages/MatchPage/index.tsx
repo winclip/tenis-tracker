@@ -17,6 +17,7 @@ export default function MatchPage() {
   };
 
   const isMissingData = !settings.player1 || !settings.player2;
+  const hasWinner = Boolean(settings.winner);
 
   if (isMissingData) {
     return <MissingPlayerData />;
@@ -51,10 +52,10 @@ export default function MatchPage() {
       </Card>
 
       <Space>
-        <Button onClick={() => onPlayerScore("player1")}>
+        <Button onClick={() => onPlayerScore("player1")} disabled={hasWinner}>
           Поен {settings.player1 || "Играч 1"}
         </Button>
-        <Button onClick={() => onPlayerScore("player2")}>
+        <Button onClick={() => onPlayerScore("player2")} disabled={hasWinner}>
           Поен {settings.player2 || "Играч 2"}
         </Button>
 
