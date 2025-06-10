@@ -4,24 +4,9 @@ import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { playerScoresPoint } from "../../redux/slices/gameSettingsSlice";
 import MissingPlayerData from "../../components/MissingPlayerData";
 import { useNavigate } from "react-router-dom";
+import PlayerScore from "../../components/PlayerScore";
 
 const { Title, Text } = Typography;
-
-const pointsToDisplay = (points: number, advantage: boolean) => {
-  if (advantage) return "Adv";
-  switch (points) {
-    case 0:
-      return "0";
-    case 1:
-      return "15";
-    case 2:
-      return "30";
-    case 3:
-      return "40";
-    default:
-      return "";
-  }
-};
 
 export default function MatchPage() {
   const settings = useAppSelector((state) => state.gameSettings);
@@ -61,39 +46,8 @@ export default function MatchPage() {
           <p style={{ color: "red", fontWeight: "bold" }}>ТАЈБРЕЈК</p>
         )}
         <Space size="large">
-          <div>
-            <Title level={5}>{settings.player1 || "Играч 1"}</Title>
-            <Text>Сетови: {settings.score.player1.sets}</Text>
-            <br />
-            <Text>Геймови у сету: {settings.score.player1.games}</Text>
-            <br />
-            <Text>
-              Поени:{" "}
-              {settings.isTiebreak
-                ? settings.score.player1.tiebreakPoints ?? 0
-                : pointsToDisplay(
-                    settings.score.player1.points,
-                    settings.score.player1.advantage
-                  )}
-            </Text>
-          </div>
-
-          <div>
-            <Title level={5}>{settings.player2 || "Играч 2"}</Title>
-            <Text>Сетови: {settings.score.player2.sets}</Text>
-            <br />
-            <Text>Геймови у сету: {settings.score.player2.games}</Text>
-            <br />
-            <Text>
-              Поени:{" "}
-              {settings.isTiebreak
-                ? settings.score.player2.tiebreakPoints ?? 0
-                : pointsToDisplay(
-                    settings.score.player2.points,
-                    settings.score.player2.advantage
-                  )}
-            </Text>
-          </div>
+          <PlayerScore player="player1" />
+          <PlayerScore player="player2" />
         </Space>
       </Card>
 
