@@ -1,4 +1,3 @@
-import React from "react";
 import { Typography, Card, Button, Space } from "antd";
 import { useAppSelector, useAppDispatch } from "../../redux/hooks";
 import { playerScoresPoint } from "../../redux/slices/gameSettingsSlice";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Button, Typography } from "antd";
 import { useNavigate } from "react-router-dom";
 import styles from "./HomePage.module.css";

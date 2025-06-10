@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 import type { GameSettings } from "../../types";
 import { DEFAULT_GAME_SETTINGS } from "../../constants";
 

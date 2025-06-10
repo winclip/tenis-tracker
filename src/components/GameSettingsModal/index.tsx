@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import   { useEffect } from "react";
 import { Modal, Form, Input, Radio, Button, Select } from "antd";
 import { setGameSettings } from "../../redux/slices/gameSettingsSlice";
 import { useAppDispatch } from "../../redux/hooks";
