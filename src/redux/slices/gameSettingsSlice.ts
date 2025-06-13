@@ -1,9 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { GameSettings } from "../../types";
+import type { GameSettings, PlayerStats } from "../../types";
 import { DEFAULT_GAME_SETTINGS } from "../../constants";
 
 const initialState: GameSettings = DEFAULT_GAME_SETTINGS;
+
+type AddStatPayload = {
+  category: keyof PlayerStats;
+  type: string;
+};
 
 const resetPointsAndAdvantages = (state: GameSettings) => {
   state.score.player1.points = 0;
@@ -83,6 +88,16 @@ const gameSettingsSlice = createSlice({
   name: "gameSettings",
   initialState,
   reducers: {
+    addStat(state, action: PayloadAction<AddStatPayload>) {
+      const { category, type } = action.payload;
+
+      if (state.extendedStats === "none" || !state.extendedStatsData) return;
+      const categoryData = state.extendedStatsData[category];
+
+      if (categoryData && type in categoryData) {
+        (categoryData as Record<string, number>)[type]++;
+      }
+    },
     setGameSettings(state, action: PayloadAction<Partial<GameSettings>>) {
       Object.assign(state, action.payload);
       state.score ||= initialState.score;
@@ -135,7 +150,11 @@ const gameSettingsSlice = createSlice({
   },
 });
 
-export const { setGameSettings, resetGameSettings, playerScoresPoint } =
-  gameSettingsSlice.actions;
+export const {
+  setGameSettings,
+  resetGameSettings,
+  playerScoresPoint,
+  addStat,
+} = gameSettingsSlice.actions;
 
 export default gameSettingsSlice.reducer;

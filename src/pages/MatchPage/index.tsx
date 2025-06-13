@@ -4,6 +4,8 @@ import { playerScoresPoint } from "../../redux/slices/gameSettingsSlice";
 import MissingPlayerData from "../../components/MissingPlayerData";
 import { useNavigate } from "react-router-dom";
 import PlayerScore from "../../components/PlayerScore";
+import StatButtonsPanel from "../../components/StatButtonsPanel";
+import StatsDisplay from "../../components/StatsDisplay";
 
 const { Title, Text } = Typography;
 
@@ -26,7 +28,6 @@ export default function MatchPage() {
   return (
     <div style={{ padding: 20 }}>
       <Title level={3}>Тениски Меч</Title>
-
       <Card style={{ marginBottom: 24 }}>
         <Title level={4}>Наставке игре</Title>
         <Text>Играч 1: {settings.player1 || "-"}</Text>
@@ -39,7 +40,6 @@ export default function MatchPage() {
         <br />
         <Text>Ко почиње: {settings.whoStarts || "-"}</Text>
       </Card>
-
       <Card style={{ marginBottom: 24 }}>
         <Title level={4}>Тренутни резултат</Title>
         {settings.isTiebreak && (
@@ -50,7 +50,6 @@ export default function MatchPage() {
           <PlayerScore player="player2" />
         </Space>
       </Card>
-
       <Space>
         <Button onClick={() => onPlayerScore("player1")} disabled={hasWinner}>
           Поен {settings.player1 || "Играч 1"}
@@ -61,7 +60,9 @@ export default function MatchPage() {
 
         <Button onClick={() => navigate("/")}>Почетна</Button>
       </Space>
-
+      {settings.extendedStatsData.forehand.net}
+      <StatButtonsPanel />
+      <StatsDisplay />
       {settings.winner && <h1>🏆 Победник - {settings.winner}</h1>}
       <h1>🎾 Сервис - {settings.server}</h1>
     </div>
