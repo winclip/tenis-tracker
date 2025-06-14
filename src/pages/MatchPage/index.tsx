@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import PlayerScore from "../../components/PlayerScore";
 import StatButtonsPanel from "../../components/StatButtonsPanel";
 import StatsDisplay from "../../components/StatsDisplay";
+import { Collapse } from "antd";
+import PlayerName from "../../components/PlayerName";
+const { Panel } = Collapse;
 
 const { Title, Text } = Typography;
 
@@ -28,18 +31,25 @@ export default function MatchPage() {
   return (
     <div style={{ padding: 20 }}>
       <Title level={3}>Тениски Меч</Title>
-      <Card style={{ marginBottom: 24 }}>
-        <Title level={4}>Наставке игре</Title>
-        <Text>Играч 1: {settings.player1 || "-"}</Text>
-        <br />
-        <Text>Играч 2: {settings.player2 || "-"}</Text>
-        <br />
-        <Text>Проширена статистика: {settings.extendedStats || "-"}</Text>
-        <br />
-        <Text>Број сетова: {settings.sets || "-"}</Text>
-        <br />
-        <Text>Ко почиње: {settings.whoStarts || "-"}</Text>
-      </Card>
+      <Collapse defaultActiveKey={["1"]} style={{ marginBottom: 24 }}>
+        <Panel header="Наставке игре" key="1">
+          <Text>Играч 1: {settings.player1 || "-"}</Text>
+          <br />
+          <Text>Играч 2: {settings.player2 || "-"}</Text>
+          <br />
+          <Text>Проширена статистика: {settings.extendedStats || "-"}</Text>
+          <br />
+          <Text>Број сетова: {settings.sets || "-"}</Text>
+          <br />
+          <Text>
+            <PlayerName
+              prefix="Ко почиње: "
+              playerKey={settings.whoStarts}
+              strong
+            />
+          </Text>
+        </Panel>
+      </Collapse>
       <Card style={{ marginBottom: 24 }}>
         <Title level={4}>Тренутни резултат</Title>
         {settings.isTiebreak && (
@@ -63,8 +73,11 @@ export default function MatchPage() {
       {settings.extendedStatsData.forehand.net}
       <StatButtonsPanel />
       <StatsDisplay />
-      {settings.winner && <h1>🏆 Победник - {settings.winner}</h1>}
-      <h1>🎾 Сервис - {settings.server}</h1>
+      {settings.winner && (
+        <PlayerName prefix="🏆Победник - " playerKey={settings.winner} strong />
+      )}
+
+      <PlayerName prefix="🎾 Сервис - " playerKey={settings.server} strong />
     </div>
   );
 }
