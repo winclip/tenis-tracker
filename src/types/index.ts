@@ -85,6 +85,11 @@ export type StatButtonCategory =
       options: BreakpointOption[];
     };
 
+export interface SetResult {
+  player1: number;
+  player2: number;
+}
+
 export interface GameSettings {
   player1: string;
   player2: string;
@@ -100,4 +105,5 @@ export interface GameSettings {
     player1: Score;
     player2: Score;
   };
+  setsHistory: SetResult[];
 }

@@ -45,6 +45,12 @@ const checkSetWin = (state: GameSettings, scorer: "player1" | "player2") => {
   }
 
   if (scorerGames >= 6 && scorerGames - opponentGames >= 2) {
+    // ➕ Сохраняем результат сета
+    state.setsHistory.push({
+      player1: state.score.player1.games,
+      player2: state.score.player2.games,
+    });
+
     state.score[scorer].sets += 1;
     resetGames(state);
     resetPointsAndAdvantages(state);
@@ -71,6 +77,12 @@ const handleTiebreak = (state: GameSettings, scorer: "player1" | "player2") => {
   const opponentPoints = state.score[opponent].tiebreakPoints!;
 
   if (scorerPoints >= 7 && scorerPoints - opponentPoints >= 2) {
+    // ➕ Сохраняем результат сета с тайбрейком
+    state.setsHistory.push({
+      player1: state.score.player1.tiebreakPoints!,
+      player2: state.score.player2.tiebreakPoints!,
+    });
+
     state.score[scorer].sets += 1;
     resetTiebreak(state);
     resetGames(state);
@@ -98,15 +110,21 @@ const gameSettingsSlice = createSlice({
         (categoryData as Record<string, number>)[type]++;
       }
     },
+
     setGameSettings(state, action: PayloadAction<Partial<GameSettings>>) {
       Object.assign(state, action.payload);
       state.score ||= initialState.score;
+      state.setsHistory ||= []; // 🔧 гарантируем, что поле инициализировано
+
       if (action.payload.whoStarts) {
         state.server = action.payload.whoStarts;
       }
     },
 
-    resetGameSettings: () => initialState,
+    resetGameSettings: () => ({
+      ...DEFAULT_GAME_SETTINGS,
+      setsHistory: [], // 🔄 сброс истории сетов
+    }),
 
     playerScoresPoint(state, action: PayloadAction<"player1" | "player2">) {
       const scorer = action.payload;

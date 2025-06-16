@@ -8,6 +8,7 @@ import StatButtonsPanel from "../../components/StatButtonsPanel";
 import StatsDisplay from "../../components/StatsDisplay";
 import { Collapse } from "antd";
 import PlayerName from "../../components/PlayerName";
+import SetsHistoryDisplay from "../../components/SetsHistoryDisplay";
 const { Panel } = Collapse;
 
 const { Title, Text } = Typography;
@@ -60,6 +61,21 @@ export default function MatchPage() {
           <PlayerScore player="player2" />
         </Space>
       </Card>
+      <Card>
+        <PlayerName
+          className="text-center"
+          prefix="🎾 Сервис - "
+          playerKey={settings.server}
+          strong
+        />
+        {settings.winner && (
+          <PlayerName
+            prefix="🏆Победник - "
+            playerKey={settings.winner}
+            strong
+          />
+        )}
+      </Card>
       <Space>
         <Button onClick={() => onPlayerScore("player1")} disabled={hasWinner}>
           Поен {settings.player1 || "Играч 1"}
@@ -70,14 +86,9 @@ export default function MatchPage() {
 
         <Button onClick={() => navigate("/")}>Почетна</Button>
       </Space>
-      {settings.extendedStatsData.forehand.net}
       <StatButtonsPanel />
+      <SetsHistoryDisplay />
       <StatsDisplay />
-      {settings.winner && (
-        <PlayerName prefix="🏆Победник - " playerKey={settings.winner} strong />
-      )}
-
-      <PlayerName prefix="🎾 Сервис - " playerKey={settings.server} strong />
     </div>
   );
 }

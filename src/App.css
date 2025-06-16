@@ -19,3 +19,7 @@ body {
   padding: 2rem;
   margin: 0 auto;
 }
+.text-center {
+  display: block;
+  text-align: center;
+}

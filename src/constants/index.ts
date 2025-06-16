@@ -1,6 +1,6 @@
 import type { GameSettings, PlayerStats, StatButtonCategory } from "../types";
 
-export const SETS_OPTIONS = [1, 2, 3, 4, 5];
+export const SETS_OPTIONS = [1, 3, 5];
 
 export const DEFAULT_EXTENDED_STATS_DATA: PlayerStats = {
   forehand: { success: 0, net: 0, out: 0 },
@@ -27,6 +27,7 @@ export const DEFAULT_GAME_SETTINGS: GameSettings = {
     player1: { points: 0, advantage: false, games: 0, sets: 0 },
     player2: { points: 0, advantage: false, games: 0, sets: 0 },
   },
+  setsHistory: [],
 };
 
 export const statButtonsConfig: StatButtonCategory[] = [
