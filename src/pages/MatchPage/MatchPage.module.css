@@ -1,0 +1,106 @@
+.results {
+  background-color: #fffefd;
+  border-color: #d9d9d9;
+  flex: 1;
+  width: 100%;
+}
+
+.titlePage {
+  color: #323b45 !important;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.subtitle,
+.serverInfo {
+  color: #323b45 !important;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.serverName {
+  color: #323b45 !important;
+  font-family: "UbuntuBold";
+  letter-spacing: 1px;
+  text-align: center;
+  border: solid 1px #7cd19f;
+  margin-bottom: 30px;
+  padding: 8px 12px;
+  border-radius: 7px;
+}
+
+.winnerName {
+  color: #fff !important;
+  font-family: "UbuntuBold";
+  letter-spacing: 1px;
+  text-align: center;
+  background-color: #7cd19f;
+  margin-bottom: 20px;
+  padding: 8px 12px;
+  border-radius: 7px;
+}
+
+.info {
+  color: #d1d1d2 !important;
+}
+
+.pointButton {
+  background-color: #7cd19f;
+  color: #ffffff;
+  border: none;
+  font-family: "UbuntuBold";
+  letter-spacing: 1px;
+  font-size: 16px;
+}
+
+.outButton {
+  background-color: #fffefd;
+  color: #323b45;
+  border: solid 1px #7cd19f;
+  margin-bottom: 20px;
+  font-family: "UbuntuBold";
+  letter-spacing: 1px;
+  font-size: 16px;
+}
+
+.topSection {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.settingsCollapse {
+  flex: 1;
+  width: 100%;
+}
+.resultStatus {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+.buttonsPoints {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .topSection {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 24px;
+  }
+
+  .settingsCollapse,
+  .results {
+    flex: 1;
+    min-width: 0;
+  }
+}

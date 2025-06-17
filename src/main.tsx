@@ -4,11 +4,22 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import "./index.css";
 import App from "./App.tsx";
+import { ConfigProvider } from "antd";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ConfigProvider
+      theme={{
+        token: {
+          fontFamily: "UbuntuRegular",
+          colorPrimaryHover: "#7cd19f",
+          colorPrimary: "#7cd19f",
+        },
+      }}
+    >
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ConfigProvider>
   </Provider>
 );

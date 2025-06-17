@@ -1,6 +1,7 @@
 import React from "react";
 import type { SetResult } from "../../types";
 import { useAppSelector } from "../../redux/hooks";
+import styles from "./SetsHistoryDisplay.module.css";
 
 const SetsHistoryDisplay: React.FC = () => {
   const setsHistory = useAppSelector((state) => state.gameSettings.setsHistory);
@@ -10,17 +11,19 @@ const SetsHistoryDisplay: React.FC = () => {
   const player2Name = player2 || "Играч 2";
 
   if (!setsHistory || setsHistory.length === 0) {
-    return <div>Још увек нема одиграних сетова</div>;
+    return <h2 className={styles.title}>Још увек нема одиграних сетова</h2>;
   }
 
   return (
-    <div>
-      <h3>Историја сетова:</h3>
-      <ul>
+    <div className={styles.historyDisplay}>
+      <h2 className={styles.title}>Историја сетова:</h2>
+      <ul className={styles.setsList}>
         {setsHistory.map((set: SetResult, index: number) => (
-          <li key={index}>
-            Сет {index + 1}: {player1Name} {set.player1} – {set.player2}{" "}
-            {player2Name}
+          <li key={index} className={styles.setItem}>
+            <span className={styles.setLabel}>Сет {index + 1}:</span>
+            <span>
+              {player1Name} {set.player1} – {set.player2} {player2Name}
+            </span>
           </li>
         ))}
       </ul>

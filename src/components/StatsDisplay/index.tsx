@@ -1,6 +1,7 @@
 import React from "react";
 import { useAppSelector } from "../../redux/hooks";
 import type { PlayerStats } from "../../types";
+import styles from "./StatsDisplay.module.css";
 
 const StatsDisplay: React.FC = () => {
   const extendedStatsData = useAppSelector(
@@ -15,29 +16,25 @@ const StatsDisplay: React.FC = () => {
     return Object.entries(stats).map(([key, value]) => {
       if (typeof value === "object" && value !== null) {
         return (
-          <div
-            key={key}
-            style={{ marginLeft: 16, marginBottom: 8, width: "30%" }}
-          >
-            <strong>{key}:</strong>
-            <div>{renderStats(value)}</div>
+          <div key={key} className={styles.statCard}>
+            <div className={styles.statTitle}>{key}</div>
+            {renderStats(value)}
           </div>
         );
       }
       return (
-        <div key={key} style={{ marginLeft: 32 }}>
-          {key}: {String(value)}
+        <div key={key} className={styles.statRow}>
+          <span>{key}:</span>
+          <span>{String(value)}</span>
         </div>
       );
     });
   };
 
   return (
-    <div>
-      <h3>Статистика играча</h3>
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {renderStats(extendedStatsData)}
-      </div>
+    <div className={styles.statsWrapper}>
+      <h3 className={styles.title}>Статистика играча</h3>
+      <div className={styles.grid}>{renderStats(extendedStatsData)}</div>
     </div>
   );
 };
